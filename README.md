@@ -1,11 +1,14 @@
-# Transcritor Whisper – Streamlit
+---
+title: Transcritor OpenAI Whisper
+emoji: 🧠
+colorFrom: blue
+colorTo: indigo
+sdk: gradio
+sdk_version: "3.50.2"
+app_file: app.py
+pinned: false
+---
 
-WebApp simples para transcrição automática de áudios e vídeos em português usando Whisper (via Gooey AI API).
+# Transcritor com OpenAI Whisper
 
-## Equipe
-Eduardo, Jane e Luana
-
-## Como usar
-1. Faça upload de um arquivo de áudio ou vídeo
-2. Aguarde a transcrição
-3. Leia ou copie o texto exibido
+WebApp para transcrição de áudio usando a API oficial da OpenAI.
