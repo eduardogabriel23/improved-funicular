@@ -1,3 +1,4 @@
-streamlit
-requests
+gradio
 openai
+numpy
+scipy
