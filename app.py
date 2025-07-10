@@ -4,7 +4,8 @@ import tempfile
 import numpy as np
 import scipy.io.wavfile
 
-openai.api_key = "SUA_CHAVE_AQUI"  # Substitua por sua chave da OpenAI
+import os
+openai.api_key = os.getenv("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")
 
 def transcrever(audio):
     if audio is None:
