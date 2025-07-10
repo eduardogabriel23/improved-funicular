@@ -1,27 +1,32 @@
 import gradio as gr
-import requests
+import openai
+import tempfile
+import numpy as np
+import scipy.io.wavfile
 
-API_URL = "https://whisper.gooey.ai/api/v1/transcribe/"
-API_KEY = "demo"  # Para uso mais intensivo, crie sua chave em https://whisper.gooey.ai
+openai.api_key = "SUA_CHAVE_AQUI"  # ou use openai.api_key = os.getenv("OPENAI_API_KEY")
 
-def transcribe_with_whisper(audio_file):
-    if audio_file is None:
-        return "Nenhum arquivo enviado."
+def transcrever(audio_np_tuple):
+    if audio_np_tuple is None:
+        return "Nenhum áudio enviado."
 
-    files = {'file': audio_file}
-    headers = {'Authorization': f'Bearer {API_KEY}'}
-    data = {'diarize': 'false'}
+    sample_rate, audio_data = audio_np_tuple
+    try:
+        # Criar um arquivo temporário WAV
+        with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
+            scipy.io.wavfile.write(tmp.name, sample_rate, audio_data.astype(np.int16))
+            tmp.flush()
 
-    response = requests.post(API_URL, headers=headers, files=files, data=data)
-    if response.ok:
-        return response.json()["text"]
-    else:
-        return f"Erro: {response.text}"
+            with open(tmp.name, "rb") as f:
+                response = openai.Audio.transcribe("whisper-1", f, language="pt")
+                return response["text"]
+    except Exception as e:
+        return f"Erro: {e}"
 
 gr.Interface(
-    fn=transcribe_with_whisper,
-    inputs=gr.Audio(source="upload", type="file"),  # <<< ALTERADO aqui!
+    fn=transcrever,
+    inputs=gr.Audio(source="upload", type="numpy"),
     outputs="text",
-    title="Transcritor Inteligente",
-    description="WebApp da equipe Eduardo, Jane e Luana. Envie um vídeo ou áudio em português e receba a transcrição exata."
+    title="Transcritor OpenAI Whisper",
+    description="Envie um áudio (MP3, WAV) e veja a transcrição."
 ).launch()
